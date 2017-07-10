@@ -4,7 +4,7 @@ from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 
 
 # 장고 외부에서 요청이 들어왔을 때, 파이썬 객체로 돌려줄 수 있는 기능.
-class SnippetSerializer(serializers.Serializer):
+class SnippetSerializer1(serializers.Serializer):
     pk = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=False, allow_blank=True, max_length=100)
     code = serializers.CharField(style={'base_template': 'textarea.html'})
@@ -34,6 +34,8 @@ class SnippetSerializer(serializers.Serializer):
 # Django object <- Serializer -> JSON(또는 이외의 데이터타입)
 
 class SnippetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Snippet
         fields = (
@@ -43,4 +45,5 @@ class SnippetSerializer(serializers.ModelSerializer):
             'linenos',
             'language',
             'style',
+            'owner',
         )
