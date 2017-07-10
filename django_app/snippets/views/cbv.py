@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import status, mixins, generics, permissions
+from rest_framework import status, mixins, generics, permissions, renderers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -10,6 +10,7 @@ from snippets.serializers import SnippetSerializer
 __all__ = (
     'SnippetList',
     'SnippetDetail',
+    'SnippetHighlight',
 )
 
 
@@ -100,3 +101,12 @@ class SnippetList(generics.ListCreateAPIView):
 class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+
+
+class SnippetHighlight(generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    renderer_classes = (renderers.StaticHTMLRenderer,)
+
+    def get(self, request, *args, **kwargs):
+        snippet = self.get_object()
+        return Response(snippet.highlighted)
